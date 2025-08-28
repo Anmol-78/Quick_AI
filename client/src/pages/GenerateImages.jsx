@@ -42,7 +42,7 @@ const GenerateImages = () => {
           '/api/ai/generate-image',
           {
             prompt,
-            published
+            publish: published 
           },
           {
             headers: {

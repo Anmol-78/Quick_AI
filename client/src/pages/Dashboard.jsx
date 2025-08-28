@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { dummyCreationData } from '../assets/assets'
-import { Gem, Sparkles } from 'lucide-react'
-import { Protect } from '@clerk/clerk-react'
+import { Gem, Sparkles, User } from 'lucide-react'
+import { Protect, useUser } from '@clerk/clerk-react'
 import CreationItems from '../components/CreationItems'
 import axios from 'axios'
 import { useAuth } from '@clerk/clerk-react'
@@ -16,6 +16,25 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true)
 
   const {getToken} = useAuth();
+  const { user } = useUser(); // Get user data from Clerk
+
+  // Debug: Log user data to see what's available
+  useEffect(() => {
+    if (user) {
+      console.log('User data:', user);
+      console.log('Image URL:', user.imageUrl);
+      console.log('Profile Image URL:', user.profileImageUrl);
+      console.log('Has image:', user.hasImage);
+      
+      // Test if the image URL is accessible
+      if (user.imageUrl) {
+        const testImg = new Image();
+        testImg.onload = () => console.log('Image loaded successfully');
+        testImg.onerror = (e) => console.log('Image failed to load:', e);
+        testImg.src = user.imageUrl;
+      }
+    }
+  }, [user]);
 
   const getDashboardData = async () => {
     try {
@@ -41,7 +60,42 @@ const Dashboard = () => {
   
 
   return (
-       <div className="h-full overflow-y-scroll p-6">
+    <div className="h-full overflow-y-scroll p-6 flex flex-col">
+      {/* User Profile Section */}
+      <div className="flex items-center gap-4 mb-6 p-4 bg-white rounded-xl border border-gray-200">
+        <div className="w-16 h-16 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center">
+          {user?.imageUrl ? (
+            <img 
+              src={user.imageUrl} 
+              alt="Profile" 
+              className="w-full h-full object-cover"
+              onLoad={() => console.log('Top image loaded successfully')}
+              onError={(e) => {
+                console.log('Top image failed to load:', e.target.src);
+                // Try to extract Google image from external accounts
+                const googleAccount = user?.externalAccounts?.find(acc => acc.provider === 'google');
+                if (googleAccount?.imageUrl) {
+                  console.log('Trying Google image:', googleAccount.imageUrl);
+                  e.target.src = googleAccount.imageUrl;
+                } else {
+                  e.target.style.display = 'none';
+                  e.target.nextSibling.style.display = 'flex';
+                }
+              }}
+            />
+          ) : null}
+          <User className={`w-8 h-8 text-gray-400 ${user?.imageUrl ? 'hidden' : 'block'}`} />
+        </div>
+        <div className="flex-1">
+          <h3 className="text-lg font-semibold text-slate-700">
+            Welcome back, {user?.username || user?.primaryEmailAddress?.emailAddress?.split('@')[0] || user?.firstName || 'User'}!
+          </h3>
+          <p className="text-sm text-slate-500">
+            {user?.primaryEmailAddress?.emailAddress || 'Continue creating amazing content'}
+          </p>
+        </div>
+      </div>
+
       <div className="flex justify-start gap-4 flex-wrap">
         {/* Total Creations Card */}
         <div className="flex justify-between items-center w-72 p-4 px-6 bg-white
@@ -89,6 +143,41 @@ const Dashboard = () => {
       </div>
       )}
 
+
+      {/* Simple User Profile Footer */}
+      <div className="fixed bottom-0 left-0 w-64 p-4 bg-white border-t border-gray-200">
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center">
+            {user?.imageUrl ? (
+              <img 
+                src={user.imageUrl} 
+                alt="Profile" 
+                className="w-full h-full object-cover"
+                onLoad={() => console.log('Bottom image loaded successfully')}
+                onError={(e) => {
+                  console.log('Bottom image failed to load:', e.target.src);
+                  // Try to extract Google image from external accounts
+                  const googleAccount = user?.externalAccounts?.find(acc => acc.provider === 'google');
+                  if (googleAccount?.imageUrl) {
+                    console.log('Trying Google image for bottom:', googleAccount.imageUrl);
+                    e.target.src = googleAccount.imageUrl;
+                  } else {
+                    e.target.style.display = 'none';
+                    e.target.nextSibling.style.display = 'flex';
+                  }
+                }}
+              />
+            ) : null}
+            <User className={`w-4 h-4 text-gray-400 ${user?.imageUrl ? 'hidden' : 'block'}`} />
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-medium text-slate-700 truncate">
+              {user?.username || user?.primaryEmailAddress?.emailAddress?.split('@')[0] || user?.firstName || 'User'}
+            </p>
+            <p className="text-xs text-slate-500">Free Plan</p>
+          </div>
+        </div>
+      </div>
      
     </div>
 

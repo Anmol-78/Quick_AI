@@ -14,7 +14,7 @@ axios.defaults.baseURL = import.meta.env.VITE_BASE_URL;
 const Community = () => {
 
   const [creations, setCreations] = useState([]);
-  const user = useUser();
+  const { user } = useUser(); // Destructure user from useUser()
   const [loading, setLoading] = useState(true);
   const { getToken } = useAuth();
 
@@ -83,10 +83,10 @@ const Community = () => {
                 </p>
                 <Heart 
                 onClick={() => imageLikeToggle(creation.id)}
-                className={`min-w-5 h-5 hover:scale-110 cursor-pointer 
-                  ${creation.likes.includes(user.id) 
+                className={`min-w-5 h-5 hover:scale-110 cursor-pointer transition-all duration-200
+                  ${creation.likes.includes(user?.id) 
                   ? 'fill-red-500 text-red-500'
-                  : "text-white"
+                  : "text-white hover:text-red-300"
                   }`}/>
               </div>
            </div>
