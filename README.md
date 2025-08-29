@@ -97,18 +97,20 @@ Follow these steps to run the project locally:
 ```bash
 git clone https://github.com/Anmol-78/Quick_AI.git
 cd Quick_AI
+```
 
 ## Install frontend dependencies
 cd client
 npm install
+```
 
 ## Install backend dependencies
 cd ../server
 npm install
-
+```
 ## Start backend (in server folder)
 npm run server
-
+```
 ## Start frontend (in client folder)
 npm run dev
 ```
@@ -127,8 +129,10 @@ Connect your repo and deploy the server/ folder.
 Add your environment variables (from .env) in the vercel dashboard.
 
 After deployment, you’ll get a live API URL (e.g., https://quick-ai-server-brown.vercel.app/).
+```
 
 # 2. Deploy Frontend (Client)
+```
 
 Go to Vercel and create a new project.
 
