@@ -82,24 +82,7 @@ const Dashboard = () => {
          </div>
        </div>
 
-       {/* This Month Card */}
-       <div className="flex justify-between items-center p-3 px-4 bg-white
-                      rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow sm:col-span-2 lg:col-span-1">
-         <div className='text-slate-600'>
-           <p className='text-xs'>This Month</p>
-           <h2 className='text-lg font-semibold'>
-             {creations.filter(c => {
-               const createdDate = new Date(c.createdAt || c.date);
-               const currentMonth = new Date().getMonth();
-               return createdDate.getMonth() === currentMonth;
-             }).length}
-           </h2>
-         </div>
-         <div className='w-8 h-8 rounded-lg bg-gradient-to-br from-green-500 to-emerald-500
-         text-white flex justify-center items-center'>
-           <Sparkles className='w-4 text-white'/>
-         </div>
-       </div>
+     
      </div>
 
      {/* Recent Creations */}
